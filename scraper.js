@@ -42,7 +42,7 @@ export const scrapeCatalog = async (page) => {
             (e) => e.innerText,
           );
           let price = await row.$eval("td:last-child", (e) =>
-            parseFloat(e.innerText),
+            parseFloat(e.innerText.replace(",", ".")),
           );
 
           currentProduct.designations.push(designation);
