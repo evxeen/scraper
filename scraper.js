@@ -4,7 +4,7 @@ import { waitForNavigationAndLoad } from "./utils/navigation.js";
 export const scrapeCatalog = async (page) => {
   const catalogItems = await page.$$(".left-menu-ul li");
 
-  for (let i = 2; i < catalogItems.length; i++) {
+  for (let i = 2; i < 5; i++) {
     let category = await page.$eval(
       `.left-menu-ul li:nth-child(${i}) a`,
       (e) => e.innerText,
@@ -16,7 +16,7 @@ export const scrapeCatalog = async (page) => {
 
     let productBlocks = await page.$$(".carousel-li .sub-catalog-item");
 
-    for (let index = 0; index < productBlocks.length; index++) {
+    for (let index = 0; index < 3; index++) {
       productBlocks = await page.$$(".carousel-li .sub-catalog-item");
       let productBlock = productBlocks[index];
 

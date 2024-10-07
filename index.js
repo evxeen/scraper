@@ -1,8 +1,6 @@
 import puppeteer from "puppeteer";
 import { scrapeCatalog } from "./scraper.js";
 import { initJsonFile } from "./utils/fileUtils.js";
-import { updateExcelFromJson } from "./utils/excelUtils.js";
-import moment from "moment";
 
 (async () => {
   const browser = await puppeteer.launch({
@@ -23,14 +21,4 @@ import moment from "moment";
   await scrapeCatalog(page);
 
   await browser.close();
-
-  const currentDate = moment().format("DD.MM.YYYY");
-
-  await updateExcelFromJson(
-    "data/products.json",
-    "data/products.xlsx",
-    currentDate,
-  );
-
-  console.log("Excel-файл успешно обновлен: data/products.xlsx");
 })();
