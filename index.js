@@ -1,6 +1,5 @@
 import puppeteer from "puppeteer";
 import { scrapeCatalog } from "./scraper.js";
-import { initJsonFile } from "./utils/fileUtils.js";
 
 (async () => {
   const browser = await puppeteer.launch({
@@ -13,8 +12,6 @@ import { initJsonFile } from "./utils/fileUtils.js";
   });
 
   const page = await browser.newPage();
-
-  initJsonFile("data/products.json");
 
   await page.goto("https://www.mtk-fortuna.ru/bolty", { waitUntil: "load" });
 

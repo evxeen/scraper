@@ -1,10 +1,15 @@
-import { saveCategoryProductData } from "./utils/fileUtils.js";
+import * as fs from "node:fs";
 import { waitForNavigationAndLoad } from "./utils/navigation.js";
+import { createJsonFile, createTemplate } from "./utils/createJsonFile.js";
+import { createFirstExcelFile } from "./utils/createFirstEx.js";
+import { createNewExcelFile } from "./utils/createNewEx.js";
 
 export const scrapeCatalog = async (page) => {
   const catalogItems = await page.$$(".left-menu-ul li");
 
-  for (let i = 2; i < 5; i++) {
+  let data = {};
+
+  for (let i = 2; i < catalogItems.length; i++) {
     let category = await page.$eval(
       `.left-menu-ul li:nth-child(${i}) a`,
       (e) => e.innerText,
@@ -16,7 +21,9 @@ export const scrapeCatalog = async (page) => {
 
     let productBlocks = await page.$$(".carousel-li .sub-catalog-item");
 
-    for (let index = 0; index < 3; index++) {
+    data[category] = {};
+
+    for (let index = 0; index < productBlocks.length; index++) {
       productBlocks = await page.$$(".carousel-li .sub-catalog-item");
       let productBlock = productBlocks[index];
 
@@ -30,9 +37,10 @@ export const scrapeCatalog = async (page) => {
         const rows = await page.$$("#contentPlaceHolder_gridDiamList tbody tr");
 
         let currentProduct = {
-          title,
-          designations: [],
-          prices: [],
+          title: {
+            designations: [],
+            prices: [],
+          },
         };
 
         for (let j = 1; j < rows.length; j++) {
@@ -45,11 +53,14 @@ export const scrapeCatalog = async (page) => {
             parseFloat(e.innerText.replace(",", ".")),
           );
 
-          currentProduct.designations.push(designation);
-          currentProduct.prices.push(price);
+          currentProduct.title.designations.push(designation);
+          currentProduct.title.prices.push(price);
         }
 
-        saveCategoryProductData("data/products.json", category, currentProduct);
+        data[category][title] = {
+          designations: currentProduct.title.designations,
+          prices: currentProduct.title.prices,
+        };
 
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -57,5 +68,16 @@ export const scrapeCatalog = async (page) => {
         await page.waitForSelector(".carousel-li .sub-catalog-item");
       }
     }
+  }
+  if (fs.existsSync("./data/product.json")) {
+    createJsonFile("./data/newProduct.json", data);
+    createTemplate();
+    createNewExcelFile();
+    fs.unlinkSync("./data/product.json");
+    fs.renameSync("./data/newProduct.json", "./data/product.json");
+    fs.unlinkSync("./data/dataTemp.json");
+  } else {
+    createJsonFile("./data/product.json", data);
+    createFirstExcelFile();
   }
 };
