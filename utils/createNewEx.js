@@ -1,17 +1,17 @@
-import XLSX from "xlsx";
-import fs from "fs";
+import XLSX from 'xlsx';
+import fs from 'fs';
 
 export const createNewExcelFile = () => {
   const todayData = new Date();
 
-  const day = String(todayData.getDate()).padStart(2, "0");
-  const month = String(todayData.getMonth() + 1).padStart(2, "0"); // Месяцы в JS начинаются с 0
+  const day = String(todayData.getDate()).padStart(2, '0');
+  const month = String(todayData.getMonth() + 1).padStart(2, '0'); // Месяцы в JS начинаются с 0
   const year = todayData.getFullYear();
 
   const formattedDate = `${day}.${month}.${year}`;
 
   let pureArrPrices = JSON.parse(
-    fs.readFileSync("./data/dataTemp.json", "utf8"),
+    fs.readFileSync('./data/dataTemp.json', 'utf8')
   );
 
   const getPureArrPrices = (data) => {
@@ -29,7 +29,7 @@ export const createNewExcelFile = () => {
   };
 
   let newArray = getPureArrPrices(pureArrPrices);
-  const workbook = XLSX.readFile("./data/bolts_list.xlsx");
+  const workbook = XLSX.readFile('./data/bolts_list.xlsx');
 
   const sheetName = workbook.SheetNames[0]; // Имя первого листа
   const worksheet = workbook.Sheets[sheetName];
@@ -40,7 +40,7 @@ export const createNewExcelFile = () => {
     if (i === 0) {
       data[i].push(`Цена ${formattedDate}`);
     } else {
-      data[i].push(newArray[i]);
+      data[i].push(newArray[i + 1]);
     }
   }
 
@@ -48,5 +48,5 @@ export const createNewExcelFile = () => {
 
   workbook.Sheets[sheetName] = updatedSheet;
 
-  XLSX.writeFile(workbook, "./data/bolts_list.xlsx");
+  XLSX.writeFile(workbook, './data/bolts_list.xlsx');
 };
