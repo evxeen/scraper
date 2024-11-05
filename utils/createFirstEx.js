@@ -1,23 +1,23 @@
-import XLSX from "xlsx";
-import fs from "fs";
+import XLSX from 'xlsx';
+import fs from 'fs';
 
 export let sheetData = [];
 
 export const createFirstExcelFile = () => {
-  const data = JSON.parse(fs.readFileSync("./data/product.json", "utf8"));
+  const data = JSON.parse(fs.readFileSync('./data/product.json', 'utf8'));
 
   const todayData = new Date();
-  const day = String(todayData.getDate()).padStart(2, "0");
-  const month = String(todayData.getMonth() + 1).padStart(2, "0");
+  const day = String(todayData.getDate()).padStart(2, '0');
+  const month = String(todayData.getMonth() + 1).padStart(2, '0');
   const year = todayData.getFullYear();
   const formattedDate = `${day}.${month}.${year}`;
 
   const workbook = XLSX.utils.book_new();
 
   sheetData.push([
-    "Категория",
-    "Название продукции",
-    "Обозначение",
+    'Категория',
+    'Название продукции',
+    'Обозначение',
     `Цена ${formattedDate}`,
   ]);
 
@@ -42,7 +42,7 @@ export const createFirstExcelFile = () => {
 
   const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
 
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Список товаров");
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Список товаров');
 
-  XLSX.writeFile(workbook, "./data/bolts_list.xlsx");
+  XLSX.writeFile(workbook, './data/bolts_list.xlsx');
 };

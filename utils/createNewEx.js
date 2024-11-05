@@ -5,7 +5,7 @@ export const createNewExcelFile = () => {
   const todayData = new Date();
 
   const day = String(todayData.getDate()).padStart(2, '0');
-  const month = String(todayData.getMonth() + 1).padStart(2, '0'); // Месяцы в JS начинаются с 0
+  const month = String(todayData.getMonth() + 1).padStart(2, '0');
   const year = todayData.getFullYear();
 
   const formattedDate = `${day}.${month}.${year}`;
@@ -30,18 +30,15 @@ export const createNewExcelFile = () => {
 
   let newArray = getPureArrPrices(pureArrPrices);
   const workbook = XLSX.readFile('./data/bolts_list.xlsx');
-
-  const sheetName = workbook.SheetNames[0]; // Имя первого листа
+  const sheetName = workbook.SheetNames[0];
   const worksheet = workbook.Sheets[sheetName];
 
-  let data = XLSX.utils.sheet_to_json(worksheet, { header: 1 }); // header: 1 возвращает массив массивов
+  let data = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-  for (let i = 0; i < data.length; i++) {
-    if (i === 0) {
-      data[i].push(`Цена ${formattedDate}`);
-    } else {
-      data[i].push(newArray[i + 1]);
-    }
+  data[0].push(formattedDate);
+
+  for (let i = 1; i < data.length; i++) {
+    data[i].push(newArray[i - 1]);
   }
 
   const updatedSheet = XLSX.utils.aoa_to_sheet(data);

@@ -24,6 +24,7 @@ export const createTemplate = () => {
           });
 
           templateFile[category][boltType] = {
+            designations: newFile[category][boltType].designations,
             prices: comparedPrices,
           };
         } else {
