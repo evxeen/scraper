@@ -20,7 +20,7 @@ export const createTemplate = () => {
           const newPrices = newFile[category][boltType].prices;
 
           const comparedPrices = newPrices.map((newPrice, index) => {
-            return newPrice === oldPrices[index] ? "–" : newPrice;
+            return newPrice === oldPrices[index] ? oldPrices[index] : newPrice;
           });
 
           templateFile[category][boltType] = {
